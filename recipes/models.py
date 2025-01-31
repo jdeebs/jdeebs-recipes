@@ -6,6 +6,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 # Import needed for get_absolute_url() using primary key <pk>
 from django.shortcuts import reverse
+# For image storage in production
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 difficulty_choices = (
@@ -68,7 +70,7 @@ class Recipe(models.Model):
         help_text="Enter ingredients as a JSON string, e.g., '[{\"name\": \"flour\", \"quantity\": 200, \"unit\": \"g\"}]'"
     )
 
-    pic = models.ImageField(upload_to='recipes', default='no_image.svg')
+    pic = CloudinaryField('image', default='no_image.svg')
 
     class Meta:
         # Order recipes alphabetically by name

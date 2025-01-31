@@ -145,3 +145,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Auth
 LOGIN_URL='/login/'
+
+# Cloudinary for image storage
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dhsgsogco',
+    'API_KEY': '166993488118593',
+    'API_SECRET': 'Diu4xCH7Liq0_cwinNhDD7k76jY',
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
