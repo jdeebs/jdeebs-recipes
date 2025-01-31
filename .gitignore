@@ -1,0 +1,11 @@
+# Text backup files
+*.bak
+
+# Database
+*.sqlite3
+
+# Virtual Environment
+venv/
+
+# Environment Variables
+*.env

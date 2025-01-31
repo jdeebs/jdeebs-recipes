@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" class="logout-success">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css">
+    <link rel="stylesheet" href="{% static 'recipes/css/styles.css' %}">
+    <title>Successfully Logged Out</title>
+</head>
+
+<body>
+    <main>
+        <div class="modal">
+            <h1 class="modal-text">You have successfully<br>logged out</h1>
+            <div class="modal-btns">
+            <a href="{% url 'recipes:home' %}" class="home-btn"><img
+                src="{% static 'recipes/icons/home.svg' %}" width="25"> Home</a>
+            <a href="{% url 'login' %}" class="relog-btn">Log Back In <img
+                src="{% static 'recipes/icons/login-box.svg' %}" width="25"></a>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

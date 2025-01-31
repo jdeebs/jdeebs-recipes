@@ -1,0 +1,148 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css">
+    <link rel="stylesheet" href="{% static 'recipes/css/styles.css' %}">
+    <title>Recipes</title>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="site-header">
+                <a href="{%url 'recipes:home' %}" class="back-btn btn"> Back <img
+                        src="{% static 'recipes/icons/back-arrow.svg' %}" width="25"></a>
+                <div class="logo-wrapper">
+                    <a href="{% url 'recipes:home' %}">
+                        <h1 class="header"><strong>JDEEBS'</strong> RECIPES</h1>
+                    </a>
+                    <p class="subheader">We've only begun pre-heating!</p>
+                </div>
+                <a href="{%url 'logout' %}" class="logout-btn btn"> Logout <img
+                        src="{% static 'recipes/icons/logout-box.svg' %}" width="25"></a>
+            </nav>
+        </div>
+    </header>
+
+    {% comment %}
+    Access records from model (object_list) one at a time using for loop
+    {% endcomment %}
+
+    <section id="recipe-list">
+        <div class="form-wrapper">
+            <form method="GET">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" name="search" id="search" placeholder="{{ search_placeholder }}"
+                            value="{{ request.GET.search }}">
+                        <button type="submit" id="submit-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <p class="chart-description">Display data for the filtered recipes<br>If the search is empty or
+                        'Reset' is selected, data for all recipes will be displayed.</p>
+
+                    <div class="chart-bar">
+                        <select name="chart_type" id="chart_type">
+                            {% for value, label in form.chart_type.field.choices %}
+                            <option value="{{ value }}" {% if request.GET.chart_type == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" id="generate-btn">Generate Chart</button>
+                        <button type="button" id="reset-btn">Reset</button>
+                    </div>
+                </div>
+            </form>
+            {% if chart %}
+            <button onclick="toggleChart()" id="toggle-chart-btn">Hide Chart</button>
+            <div class="chart-container">
+                <img src="data:image/png;base64,{{ chart }}" alt="Chart" id="chart-img">
+            </div>
+            {% else %}
+            <p>No data available to generate the chart.</p>
+            {% endif %}
+        </div>
+
+        <div class="recipe-grid__wrapper">
+            <div class="recipe-grid">
+                {% for recipe in recipes %}
+                <a href="{{ recipe.get_absolute_url }}">
+                    <div class="grid-item">
+                        <div class="grid-item__content">
+                            <h1 class="recipe-name">{{ recipe.name }}</h1>
+                            <p class="recipe-total-time"> Total time: {{ recipe.total_time }} minutes</p>
+                            <p class="recipe-difficulty"> Difficulty: {{ recipe.difficulty|title }}</p>
+                            {% for ingredient in recipe.parsed_ingredients %}
+                            {% if request.GET.search and request.GET.search|lower in ingredient.name|lower %}
+                            <p class="recipe-includes"> Recipe includes: {{ ingredient.name|capfirst }}</p>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <img src="{{ recipe.pic.url }}" alt="{{ recipe.description }}" class="recipe-thumbnail" />
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <div class="pagination-wrapper">
+                <div class="pagination-menu">
+                    {% if page_obj.has_previous %}
+                    <a href="?page=1" class="pagination-item">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-item">{{ page_obj.previous_page_number }}</a>
+                    {% endif %}
+
+                    <span class="pagination-item active">{{ page_obj.number }}</span>
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-item">{{ page_obj.next_page_number }}</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-item">Last</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        // Reset button
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            document.getElementById('search').value = '';
+            document.getElementById('submit-btn').click();
+        })
+        // Submit button
+        document.getElementById('search').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                document.getElementById('submit-btn').click();
+            }
+        })
+        // Hide/Show chart image
+        function toggleChart() {
+            let chart = document.getElementById('chart-img');
+            let btn = document.getElementById('toggle-chart-btn')
+            if (chart.style.display === 'none') {
+                chart.style.display = "block";
+                btn.innerText = "Hide Chart";
+            } else {
+                chart.style.display = "none";
+                btn.innerText = "Show Chart";
+            }
+        }
+    </script>
+</body>
+
+</html>
