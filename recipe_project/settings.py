@@ -82,9 +82,17 @@ WSGI_APPLICATION = 'recipe_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'default': dj_database_url.config(default=f'sqlite:///{BASE_DIR / "db.sqlite3"}', conn_max_age=500)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Use PostgreSQL if DATABASE_URL is available (on Heroku)
+DATABASES['default'] = dj_database_url.config(
+    default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+    conn_max_age=500,
+    engine='django.db.backends.postgresql'
+)
 
 
 # Password validation
