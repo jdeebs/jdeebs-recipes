@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'users',
     # To customize form styles
     'widget_tweaks',
+    'whitenoise.runserver_nostatic',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
