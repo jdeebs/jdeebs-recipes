@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from cloudinary import CloudinaryImage
+from cloudinary_storage.storage import VideoMediaFileSystemStorage, MediaFileSystemStorage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'whitenoise.runserver_nostatic',
     'cloudinary',
+    'cloudinary_storage'
 ]
 
 MIDDLEWARE = [
@@ -150,8 +153,8 @@ LOGIN_URL='/login/'
 
 # Cloudinary for image storage
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dhsgsogco',
-    'API_KEY': '166993488118593',
-    'API_SECRET': 'Diu4xCH7Liq0_cwinNhDD7k76jY',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_URL').split('@')[1].split('/')[0],
+    'API_KEY': os.environ.get('CLOUDINARY_URL').split(':')[1].split('@')[0],
+    'API_SECRET': os.environ.get('CLOUDINARY_URL').split(':')[2].split('/')[0],
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
