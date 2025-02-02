@@ -41,10 +41,6 @@ def get_chart(chart_type, data, **kwargs):
         # Bar chart: Frequency of ingredient use across all recipes
         ingredient_counts = data['ingredients'].explode().value_counts(sort=False)
 
-        # Filter out ingredients based on threshold
-        threshold = 2
-        ingredient_counts = ingredient_counts[ingredient_counts >= threshold]
-
         ingredient_counts.plot(kind='bar')
         plt.title('Ingredient Frequency')
         plt.xlabel('Ingredients')
