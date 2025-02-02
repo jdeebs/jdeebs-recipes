@@ -3,14 +3,15 @@
 # python manage.py shell
 # exec(open('seed_recipes.py').read())
 
-from recipes.models import Recipe
-import json
 import os
 import django
+import json
 
 # Set up Django settings
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "recipe_project.settings")
 django.setup()
+
+from recipes.models import Recipe
 
 recipes = [
     {
