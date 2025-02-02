@@ -5,6 +5,12 @@
 
 from recipes.models import Recipe
 import json
+import os
+import django
+
+# Set up Django settings
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "recipe_project.settings")
+django.setup()
 
 recipes = [
     {
@@ -137,3 +143,4 @@ recipes = [
 
 for recipe_data in recipes:
     Recipe.objects.create(**recipe_data)
+    print(f"Added: {recipe_data['name']}")
