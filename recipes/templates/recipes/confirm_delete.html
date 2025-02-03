@@ -1,10 +1,26 @@
-{% extends 'recipe_list.html' %}
+{% load static %}
 
-{% block content %}
-  <h2>Are you sure you want to delete the recipe "{{ recipe.name }}"?</h2>
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-    <a href="{% url 'recipes:recipe_list' %}">Cancel</a>
-  </form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en" class="confirm-delete">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Manrope:wght@200..800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css">
+    <link rel="stylesheet" href="{% static 'recipes/css/styles.css' %}">
+    <title>Confirm Delete</title>
+</head>
+
+<div class="modal">
+    <h1 class="modal-text">Are you sure you want to delete "{{ recipe.name }}"?</h1>
+    <form method="POST" class="modal-btns">
+        {% csrf_token %}
+        <button type="submit" class="delete-btn">Delete</button>
+        <a href="{% url 'recipes:list' %}" class="home-btn">Cancel</a>
+    </form>
+</div>

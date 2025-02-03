@@ -109,6 +109,6 @@ def delete_recipe(request, pk):
 
     if request.method == 'POST':
         recipe.delete()
-        return redirect('recipes:recipe_list')
+        return redirect('recipes:list')
     
     return render(request, 'recipes/confirm_delete.html', {'recipe': recipe})

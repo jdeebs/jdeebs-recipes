@@ -97,7 +97,7 @@
                     </a>
 
                     {% if recipe.user == request.user %}
-                    <a href="{% url 'recipes:delete_recipe' recipe.pk %}">Delete</a>
+                    <a href="{% url 'recipes:delete_recipe' recipe.pk %}" class="delete-btn">Delete</a>
                     {% endif %}
                 </div>
 
