@@ -7,5 +7,5 @@ urlpatterns = [
     path('', home, name='home'),
     path('recipes/', RecipeListView.as_view(), name='list'),
     path('recipes/<pk>', RecipeDetailView.as_view(), name='detail'),
-    path('recipes/delete/<int:pk', delete_recipe, name='delete_recipe'),
+    path('recipes/delete/<int:pk>', delete_recipe, name='delete_recipe'),
 ]
