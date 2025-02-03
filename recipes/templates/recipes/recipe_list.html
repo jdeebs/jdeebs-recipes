@@ -87,6 +87,7 @@
         <div class="recipe-grid__wrapper">
             <div class="recipe-grid">
                 {% for recipe in recipes %}
+                {% if recipe.user == request.user %}
 
                 <div class="grid-item">
                     <a href="{{ recipe.get_absolute_url }}">
@@ -104,11 +105,10 @@
                         <img src="{{ recipe.pic.url }}" alt="{{ recipe.description }}" class="recipe-thumbnail" />
                     </a>
 
-                    {% if recipe.user == request.user %}
+                    
                     <a href="{% url 'recipes:delete_recipe' recipe.pk %}" class="delete-btn">Delete</a>
-                    {% endif %}
                 </div>
-
+                {% endif %}
                 {% endfor %}
             </div>
 
