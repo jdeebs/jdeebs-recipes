@@ -16,11 +16,17 @@
     <title>Confirm Delete</title>
 </head>
 
-<div class="modal">
-    <h1 class="modal-text">Are you sure you want to delete "{{ recipe.name }}"?</h1>
-    <form method="POST" class="modal-btns">
-        {% csrf_token %}
-        <button type="submit" class="delete-btn">Delete</button>
-        <a href="{% url 'recipes:list' %}" class="home-btn">Cancel</a>
-    </form>
-</div>
+<body>
+    <main>
+        <div class="modal">
+            <h1 class="modal-text">Are you sure you want to delete "{{ recipe.name }}"?</h1>
+            <form method="POST" class="modal-btns">
+                {% csrf_token %}
+                <button type="submit" class="delete-btn">Delete</button>
+                <a href="{% url 'recipes:list' %}" class="home-btn">Cancel</a>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>
