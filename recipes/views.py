@@ -32,19 +32,8 @@ class RecipeListView(LoginRequiredMixin, FilterView):
         context['search_placeholder'] = 'Search recipes by title, ingredients, or difficulty'
 
         chart_form = RecipeChartForm(self.request.GET or None)
-        recipe_form = RecipeForm(self.request.POST or None)
         # Add forms to context
         context['chart_form'] = chart_form
-        context['recipe_form'] = recipe_form
-        chart = None
-
-        # Handle RecipeForm submission
-        if self.request.method == 'POST' and recipe_form.is_valid():
-            recipe = recipe_form.save(commit=False)
-            # Assign to logged in user
-            recipe.user = self.request.user
-            recipe.save()
-            return redirect('recipes:list')
 
         # Get filtered queryset
         filtered_recipes = self.filterset.qs
@@ -111,3 +100,16 @@ def delete_recipe(request, pk):
         return redirect('recipes:list')
     
     return render(request, 'recipes/confirm_delete.html', {'recipe': recipe})
+
+@login_required
+def add_recipe(request):
+    if request.method == 'POST':
+        recipe_form = RecipeForm(request.POST)
+        if recipe_form.is_valid():
+            recipe = recipe_form.save(commit=False)
+            recipe.user = request.user
+            recipe.save()
+            return redirect('recipes:list')
+    else:
+        recipe_form = RecipeForm()
+    return render(request, 'recipes/recipes_list.html', {'recipe_form': recipe_form})
