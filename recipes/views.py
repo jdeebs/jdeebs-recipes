@@ -112,4 +112,4 @@ def add_recipe(request):
             return redirect('recipes:list')
     else:
         recipe_form = RecipeForm()
-    return render(request, 'recipes/recipes_list.html', {'recipe_form': recipe_form})
+    return render(request, 'recipes/recipe_list.html', {'recipe_form': recipe_form})
