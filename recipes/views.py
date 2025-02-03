@@ -44,7 +44,7 @@ class RecipeListView(LoginRequiredMixin, FilterView):
             # Assign to logged in user
             recipe.user = self.request.user
             recipe.save()
-            return redirect('recipes:recipe_list')
+            return redirect('recipes:list')
 
         # Get filtered queryset
         filtered_recipes = self.filterset.qs
@@ -77,7 +77,8 @@ class RecipeListView(LoginRequiredMixin, FilterView):
         ]
         )
 
-        # Handle RecipeChartForm
+        # Handle RecipeChartForm submission
+        chart = None
         if chart_form.is_valid() and not recipe_data.empty:
             # Retrieve the selected chart type
             chart_type = chart_form.cleaned_data.get('chart_type')
@@ -85,8 +86,6 @@ class RecipeListView(LoginRequiredMixin, FilterView):
             # Generate the chart
             chart = get_chart(chart_type, recipe_data)
             context['chart'] = chart
-        else:
-            context['chart'] = None
         return context
     
     # Useful for debugging recipe length

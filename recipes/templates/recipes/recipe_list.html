@@ -55,7 +55,7 @@
 
                     <div class="chart-bar">
                         <select name="chart_type" id="chart_type">
-                            {% for value, label in form.chart_type.field.choices %}
+                            {% for value, label in chart_form.chart_type.field.choices %}
                             <option value="{{ value }}" {% if request.GET.chart_type == value %}selected{% endif %}>
                                 {{ label }}
                             </option>
