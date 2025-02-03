@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import DetailView
 # For search functionality
 from django_filters.views import FilterView
 from .filters import RecipeFilter
 # To protect a CBV
 from django.contrib.auth.mixins import LoginRequiredMixin
+# To protect a FBV
+from django.contrib.auth.decorators import login_required
 from .models import Recipe
 # For chart visualization
 import pandas as pd
@@ -98,3 +100,15 @@ class RecipeListView(LoginRequiredMixin, FilterView):
 class RecipeDetailView(LoginRequiredMixin, DetailView):
     model = Recipe
     template_name = 'recipes/recipe_detail.html'
+
+@login_required
+def delete_recipe(request, pk):
+    # Get recipe by primary key and ensure it belongs
+    # to logged in user
+    recipe = get_object_or_404(Recipe, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        recipe.delete()
+        return redirect('recipes:recipe_list')
+    
+    return render(request, 'recipes/confirm_delete.html', {'recipe': recipe})
