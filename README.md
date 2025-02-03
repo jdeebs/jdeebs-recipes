@@ -111,7 +111,13 @@ Follow these steps to set up the Recipe App locally:
 
 ## Deployment
 
-The application will be deployed on Heroku.
+The live site can be found [here](https://secret-reef-56392-9a358239c36e.herokuapp.com/).
+
+**Login Credentials:**
+```plaintext
+Username: test
+Password: testpassword
+```
 
 ## Contributing
 
@@ -119,4 +125,4 @@ Contributions are welcome!
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
