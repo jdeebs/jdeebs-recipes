@@ -4,6 +4,7 @@ from django.db import models
 # Import validators
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 # Import needed for get_absolute_url() using primary key <pk>
 from django.shortcuts import reverse
 # For image storage in production
@@ -40,6 +41,8 @@ def validate_ingredients(value):
 
 
 class Recipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     name = models.CharField(max_length=120, default="Unnamed Recipe")
 
     description = models.TextField(
@@ -77,7 +80,7 @@ class Recipe(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return str(self.name)
+        return f"{self.name} uploaded by {self.user}."
 
     def get_absolute_url(self):
         return reverse ('recipes:detail', kwargs={'pk': self.pk})

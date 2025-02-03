@@ -1,4 +1,5 @@
 from django import forms
+from .models import Recipe
 
 CHART__CHOICES = (
     ('#1', 'Bar chart: Ingredient Frequency'),
@@ -8,3 +9,8 @@ CHART__CHOICES = (
 
 class RecipeChartForm(forms.Form):
     chart_type = forms.ChoiceField(choices=CHART__CHOICES)
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['name', 'description', 'prep_time_minutes', 'cooking_time_minutes', 'difficulty', 'ingredients', 'pic']
