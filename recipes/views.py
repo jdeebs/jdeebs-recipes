@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 # For search functionality
 from django_filters.views import FilterView
@@ -9,7 +9,7 @@ from .models import Recipe
 # For chart visualization
 import pandas as pd
 from .utils import get_chart
-from .forms import RecipeChartForm
+from .forms import RecipeChartForm, RecipeForm
 # For pagination
 from django.core.paginator import Paginator
 
@@ -29,10 +29,20 @@ class RecipeListView(LoginRequiredMixin, FilterView):
         # Placeholder text for search field
         context['search_placeholder'] = 'Search recipes by title, ingredients, or difficulty'
 
-        form = RecipeChartForm(self.request.GET or None)
-        # Add form to context
-        context['form'] = form
+        chart_form = RecipeChartForm(self.request.GET or None)
+        recipe_form = RecipeForm(self.request.POST or None)
+        # Add forms to context
+        context['chart_form'] = chart_form
+        context['recipe_form'] = recipe_form
         chart = None
+
+        # Handle RecipeForm submission
+        if self.request.method == 'POST' and recipe_form.is_valid():
+            recipe = recipe_form.save(commit=False)
+            # Assign to logged in user
+            recipe.user = self.request.user
+            recipe.save()
+            return redirect('recipes:recipe_list')
 
         # Get filtered queryset
         filtered_recipes = self.filterset.qs
@@ -65,10 +75,10 @@ class RecipeListView(LoginRequiredMixin, FilterView):
         ]
         )
 
-        # Check if the form is valid
-        if form.is_valid() and not recipe_data.empty:
+        # Handle RecipeChartForm
+        if chart_form.is_valid() and not recipe_data.empty:
             # Retrieve the selected chart type
-            chart_type = form.cleaned_data.get('chart_type')
+            chart_type = chart_form.cleaned_data.get('chart_type')
 
             # Generate the chart
             chart = get_chart(chart_type, recipe_data)
@@ -77,10 +87,12 @@ class RecipeListView(LoginRequiredMixin, FilterView):
             context['chart'] = None
         return context
     
-    def get_queryset(self):
-        queryset = Recipe.objects.all()  # Or apply any filters here
-        print("Queryset length:", len(queryset))
-        return queryset
+    # Useful for debugging recipe length
+
+    # def get_queryset(self):
+    #     queryset = Recipe.objects.all()
+    #     print("Queryset length:", len(queryset))
+    #     return queryset
 
 
 class RecipeDetailView(LoginRequiredMixin, DetailView):
