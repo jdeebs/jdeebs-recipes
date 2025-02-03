@@ -74,15 +74,7 @@
             {% else %}
             <p>No data available to generate the chart.</p>
             {% endif %}
-        </div>
-
-        <div class="form-wrapper">
-            <form method="POST">
-                {% csrf_token %}
-                {{ recipe_form.as_p }}
-                <button type="submit" id="submit-btn">Add Recipe</button>
-            </form>
-        </div>        
+        </div>   
 
         <div class="recipe-grid__wrapper">
             <div class="recipe-grid">
