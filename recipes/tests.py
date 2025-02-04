@@ -1,9 +1,10 @@
 import json
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Recipe
 from .forms import RecipeChartForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 # Import validators
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -11,7 +12,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class RecipeModelTest(TestCase):
-    def setUpTestData():
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='testuser', password='testpassword')
+
         ingredients_data = [
             {"name": "flour", "quantity": 200, "unit": "g"}, 
             {"name": "milk", "quantity": 300, "unit": "ml"}, 
@@ -25,6 +29,7 @@ class RecipeModelTest(TestCase):
 
         # Set up test data object
         Recipe.objects.create(
+            user=cls.user,
             name='Classic Pancakes',
             description='Fluffy and light pancakes, perfect for breakfast.',
             prep_time_minutes=10,
@@ -61,7 +66,7 @@ class RecipeModelTest(TestCase):
         # Get field metadata
         max_length = recipe._meta.get_field('description').max_length
 
-        # Assert that the max length is 120
+        # Assert that the max length is 500
         self.assertEqual(max_length, 500)
 
         # Compare the recipes description to <= 120
@@ -164,27 +169,22 @@ class RecipeChartFormTest(TestCase):
         self.assertEqual(actual_choices, expected_choices, 'Chart type choices do not match the expected values.')
 
 class RecipeListViewTest(TestCase):
-    def setUp(self):
-        # Create user for authentication tests using django's built in user model
-        self.user = get_user_model().objects.create(username='testuser')
-        self.user.set_password('testpassword')
-        self.user.save()
-        self.url = reverse('recipes:list')
-        
-    def setUpTestData():
+    @classmethod
+    def setUpTestData(cls):
         ingredients_data = [
-            {"name": "flour", "quantity": 200, "unit": "g"}, 
-            {"name": "milk", "quantity": 300, "unit": "ml"}, 
-            {"name": "egg", "quantity": 2, "unit": "pcs"}, 
-            {"name": "baking powder", "quantity": 1, "unit": "tsp"}, 
+            {"name": "flour", "quantity": 200, "unit": "g"},
+            {"name": "milk", "quantity": 300, "unit": "ml"},
+            {"name": "egg", "quantity": 2, "unit": "pcs"},
+            {"name": "baking powder", "quantity": 1, "unit": "tsp"},
             {"name": "sugar", "quantity": 2, "unit": "tbsp"}
-            ]
+        ]
 
-        # Encode ingredients as JSON
         ingredients_json = json.dumps(ingredients_data)
 
         # Set up one recipe data test object
+        cls.user = User.objects.create_user(username='testuser', password='testpassword')
         Recipe.objects.create(
+            user=cls.user,
             name='Classic Pancakes',
             description='Fluffy and light pancakes, perfect for breakfast.',
             prep_time_minutes=10,
@@ -192,6 +192,7 @@ class RecipeListViewTest(TestCase):
             difficulty='easy',
             ingredients=ingredients_json
         )
+        cls.url = reverse('recipes:list')
 
     def test_redirect_if_not_authenticated(self):
         # Test that unauthenticated users are redirected to login
@@ -219,25 +220,20 @@ class RecipeListViewTest(TestCase):
 
 class RecipeDetailViewTest(TestCase):
     def setUp(self):
-        # Create a user
-        self.user = get_user_model().objects.create_user(username='testuser', password='testpassword')
-
-        # Log in the user
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.client.login(username="testuser", password="testpassword")
-        
-        ingredients_data = [
-            {"name": "flour", "quantity": 200, "unit": "g"}, 
-            {"name": "milk", "quantity": 300, "unit": "ml"}, 
-            {"name": "egg", "quantity": 2, "unit": "pcs"}, 
-            {"name": "baking powder", "quantity": 1, "unit": "tsp"}, 
-            {"name": "sugar", "quantity": 2, "unit": "tbsp"}
-            ]
 
-        # Encode ingredients as JSON
+        ingredients_data = [
+            {"name": "flour", "quantity": 200, "unit": "g"},
+            {"name": "milk", "quantity": 300, "unit": "ml"},
+            {"name": "egg", "quantity": 2, "unit": "pcs"},
+            {"name": "baking powder", "quantity": 1, "unit": "tsp"},
+            {"name": "sugar", "quantity": 2, "unit": "tbsp"}
+        ]
         ingredients_json = json.dumps(ingredients_data)
 
-        # Set up one recipe data test object
         self.recipe = Recipe.objects.create(
+            user=self.user,
             name='Classic Pancakes',
             description='Fluffy and light pancakes, perfect for breakfast.',
             prep_time_minutes=10,
@@ -245,6 +241,7 @@ class RecipeDetailViewTest(TestCase):
             difficulty='easy',
             ingredients=ingredients_json
         )
+
         
     def test_recipe_detail_view_successful_response(self):
         # Reverse the URL for detail view
@@ -270,3 +267,29 @@ class RecipeDetailViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(response.context['recipe'], self.recipe)
+
+class AddRecipeTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user(username='testuser', password='testpassword')
+
+    def setUp(self):
+        self.client.login(username="testuser", password="testpassword")
+        self.add_recipe_url = reverse('recipes:add_recipe')
+
+    def test_add_recipe_success(self):
+        data = {
+            'user': self.user.id,
+            'name': 'New Recipe',
+            'description': 'A test recipe',
+            'prep_time_minutes': 15,
+            'cooking_time_minutes': 25,
+            'difficulty': 'medium',
+            'ingredients': json.dumps([
+                {"name": "sugar", "quantity": 100, "unit": "g"},
+                {"name": "flour", "quantity": 200, "unit": "g"}
+            ])
+        }
+        response = self.client.post(self.add_recipe_url, data)
+        self.assertEqual(response.status_code, 302)  # Expect redirect
+        self.assertTrue(Recipe.objects.filter(name='New Recipe').exists())
