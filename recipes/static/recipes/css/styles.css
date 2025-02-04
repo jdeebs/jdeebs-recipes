@@ -378,6 +378,18 @@ button { all: unset; }
 #reset-btn {
   background-color: rgba(169, 28, 28, 0.5);
 }
+#add-recipe-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md) 0 var(--spacing-md);
+  color: black;
+  background-color: rgba(32, 177, 56, 0.5);
+  border-radius: 7px 0 14px 14px;
+  width: 120px;
+  height: 44px;
+}
 
 .chart-container {
   display: flex;
