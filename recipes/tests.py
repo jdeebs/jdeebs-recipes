@@ -279,17 +279,17 @@ class AddRecipeTest(TestCase):
 
     def test_add_recipe_success(self):
         data = {
-            'user': self.user.id,
             'name': 'New Recipe',
             'description': 'A test recipe',
             'prep_time_minutes': 15,
             'cooking_time_minutes': 25,
             'difficulty': 'medium',
-            'ingredients': json.dumps([
-                {"name": "sugar", "quantity": 100, "unit": "g"},
-                {"name": "flour", "quantity": 200, "unit": "g"}
-            ])
+            # Ensure ingredient fields are handled separately
+            # as configured in the RecipeForm
+            'ingredient_names': ['sugar', 'flour'],
+            'ingredient_quantities': [100, 200],
+            'ingredient_units': ['g', 'g'],
         }
         response = self.client.post(self.add_recipe_url, data)
-        self.assertEqual(response.status_code, 302)  # Expect redirect
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(Recipe.objects.filter(name='New Recipe').exists())
