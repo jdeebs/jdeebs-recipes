@@ -438,3 +438,32 @@ button { all: unset; }
   color: white;
   background-color: black;
 }
+.ingredient-label {
+  margin: 0;
+}
+#ingredient-table input {
+  width: 100px;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#ingredient-table th, 
+#ingredient-table td {
+    text-align: left;
+    font-weight: 400;
+}
+#ingredient-table td:nth-child(4) {
+    font-size: 25px;
+    font-weight: 600;
+    width: 10%;
+    text-align: center;
+    padding: 0;
+}
+#ingredient-table button {
+  width: 100%;
+}
