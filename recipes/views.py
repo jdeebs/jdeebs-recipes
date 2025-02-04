@@ -104,7 +104,7 @@ def delete_recipe(request, pk):
 @login_required
 def add_recipe(request):
     if request.method == 'POST':
-        recipe_form = RecipeForm(request.POST)
+        recipe_form = RecipeForm(request.POST, request.FILES)
         if recipe_form.is_valid():
             recipe = recipe_form.save(commit=False)
             recipe.user = request.user

@@ -22,7 +22,7 @@
         <div class="modal">
             <h1 class="modal-text">Add a New Recipe</h1>
 
-            <form method="POST" class="add-recipe-form">
+            <form method="POST" enctype="multipart/form-data" class="add-recipe-form">
                 {% csrf_token %}
 
                 <div class="form-group">
