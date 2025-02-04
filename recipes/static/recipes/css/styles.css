@@ -312,7 +312,7 @@ button { all: unset; }
   justify-content: space-between;
 }
 
-.login-form {
+.login-form, .add-recipe-form {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -320,6 +320,9 @@ button { all: unset; }
 }
 ::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.50);
+}
+.add-recipe-form {
+  align-items: flex-start;
 }
 
 #username, #password {
@@ -336,6 +339,12 @@ button { all: unset; }
   justify-content: flex-end;
   padding-top: var(--spacing-sm);
   font-size: .75em;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
 }
 
 .form-wrapper {

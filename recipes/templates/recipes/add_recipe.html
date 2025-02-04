@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 
 <!DOCTYPE html>
 <html lang="en" class="redirect">
@@ -18,11 +19,59 @@
 
 <body>
     <main>
-        <div class="form-wrapper">
-            <h2>Add a New Recipe</h2>
-            <form method="POST">
+        <div class="modal">
+            <h1 class="modal-text">Add a New Recipe</h1>
+
+            <form method="POST" class="add-recipe-form">
                 {% csrf_token %}
-                {{ recipe_form.as_p }}
+
+                <div class="form-group">
+                    <label for="name">Recipe Name</label>
+                    {% render_field recipe_form.name class="form-control" id="name" placeholder="Enter recipe name" %}
+                    {% if recipe_form.name.errors %}
+                    <span class="error">{{ recipe_form.name.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    {% render_field recipe_form.description class="form-control" id="description" placeholder="Enter a short description" rows="2" %}
+                    {% if recipe_form.description.errors %}
+                    <span class="error">{{ recipe_form.description.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="prep_time">Prep Time (minutes)</label>
+                    {% render_field recipe_form.prep_time_minutes type="number" class="form-control" id="prep_time" placeholder="Enter prep time in minutes" %}
+                    {% if recipe_form.prep_time_minutes.errors %}
+                    <span class="error">{{ recipe_form.prep_time_minutes.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="cooking_time">Cooking Time (minutes)</label>
+                    {% render_field recipe_form.cooking_time_minutes type="number" class="form-control" id="cooking_time" placeholder="Enter cooking time in minutes" %}
+                    {% if recipe_form.cooking_time_minutes.errors %}
+                    <span class="error">{{ recipe_form.cooking_time_minutes.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    {% render_field recipe_form.difficulty class="form-control" id="difficulty" %}
+                    {% if recipe_form.difficulty.errors %}
+                    <span class="error">{{ recipe_form.difficulty.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="pic">Upload an Image</label>
+                    {% render_field recipe_form.pic class="form-control-file" id="pic" %}
+                    {% if recipe_form.pic.errors %}
+                    <span class="error">{{ recipe_form.pic.errors.0 }}</span>
+                    {% endif %}
+                </div>
 
                 <h3>Ingredients</h3>
                 <table id="ingredient-table">
@@ -33,14 +82,31 @@
                         <th>Add Row</th>
                     </tr>
                     <tr>
-                        <td><input type="text" name="ingredient_names"></td>
-                        <td><input type="text" name="ingredient_quantities"></td>
-                        <td><input type="text" name="ingredient_units"></td>
-                        <td><button type="button" onclick="addIngredientRow()">+</button></td>
+                        <td><input type="text" name="ingredient_names" class="form-control"
+                                placeholder="Ingredient Name"></td>
+                        <td><input type="text" name="ingredient_quantities" class="form-control" placeholder="Quantity">
+                        </td>
+                        <td><input type="text" name="ingredient_units" class="form-control" placeholder="Unit"></td>
+                        <td><button type="button" class="add-btn" onclick="addIngredientRow()">+</button></td>
                     </tr>
                 </table>
 
-                <button type="submit" id="submit-recipe-btn">Add Recipe</button>
+                {% if recipe_form.errors %}
+                <div class="error-message">
+                    <ul>
+                        {% for field, errors in recipe_form.errors.items %}
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <div class="modal-btns">
+                <button type="submit" class="relog-btn">Add Recipe <img src="{% static 'recipes/icons/login-box.svg' %}"
+                        width="25"></button>
+                </div>
             </form>
         </div>
     </main>
@@ -49,18 +115,18 @@
         function addIngredientRow() {
             let table = document.getElementById("ingredient-table");
             let newRow = table.insertRow(-1);
-            
+
             let nameCell = newRow.insertCell(0);
             let quantityCell = newRow.insertCell(1);
             let unitCell = newRow.insertCell(2);
             let actionCell = newRow.insertCell(3);
-    
-            nameCell.innerHTML = '<input type="text" name="ingredient_names">';
-            quantityCell.innerHTML = '<input type="text" name="ingredient_quantities">';
-            unitCell.innerHTML = '<input type="text" name="ingredient_units">';
-            actionCell.innerHTML = '<button type="button" onclick="removeIngredientRow(this)">-</button>';
+
+            nameCell.innerHTML = '<input type="text" name="ingredient_names" class="form-control" placeholder="Ingredient Name">';
+            quantityCell.innerHTML = '<input type="text" name="ingredient_quantities" class="form-control" placeholder="Quantity">';
+            unitCell.innerHTML = '<input type="text" name="ingredient_units" class="form-control" placeholder="Unit">';
+            actionCell.innerHTML = '<button type="button" class="remove-btn" onclick="removeIngredientRow(this)">-</button>';
         }
-    
+
         function removeIngredientRow(button) {
             let row = button.parentElement.parentElement;
             row.parentElement.removeChild(row);
