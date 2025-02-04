@@ -108,6 +108,8 @@ def add_recipe(request):
         if recipe_form.is_valid():
             recipe = recipe_form.save(commit=False)
             recipe.user = request.user
+            # Save in proper JSON format
+            recipe.ingredients = recipe_form.cleaned_data['ingredients']
             recipe.save()
             return redirect('recipes:list')
     else:
