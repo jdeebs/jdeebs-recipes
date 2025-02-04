@@ -12,38 +12,29 @@ class RecipeChartForm(forms.Form):
     chart_type = forms.ChoiceField(choices=CHART__CHOICES)
 
 class RecipeForm(forms.ModelForm):
-    # Ingredient fields
-    ingredient_names = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Enter ingredient names, one per line"}), required=False
-    )
-    ingredient_quantities = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Enter ingredient quantities, one per line"}), required=False
-    )
-    ingredient_units = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Enter ingredient units, one per line"}), required=False
-    )
-    
     class Meta:
         model = Recipe
         # Ingredient is separate due to JSON format requirement
         fields = ['name', 'description', 'prep_time_minutes', 'cooking_time_minutes', 'difficulty', 'pic']
 
     def clean(self):
-        # Convert ingredient fields to JSON format
         cleaned_data = super().clean()
 
-        names = cleaned_data.get('ingredient_names', '').splitlines()
-        quantities = cleaned_data.get('ingredient_quantities', '').splitlines()
-        units = cleaned_data.get('ingredient_units', '').splitlines()
+        # Get ingredient data from the form 'POST'
+        names = [name.strip() for name in self.data.getlist('ingredient_names') if name.strip()]
+        quantities = [qty.strip() for qty in self.data.getlist('ingredient_quantities') if qty.strip()]
+        units = [unit.strip() for unit in self.data.getlist('ingredient_units') if unit.strip()]
 
-        # Ensure equal number of ingredients, quantities, and units
+        # Ensure that at least one ingredient exists
+        if not names or not quantities or not units:
+            raise forms.ValidationError("Recipe must have at least 1 ingredient with a name, quantity, and unit.")
+
+        # Ensure all lists have the same number of items
         if len(names) != len(quantities) or len(quantities) != len(units):
             raise forms.ValidationError("Each ingredient must have a name, quantity, and unit of measure.")
-        
+
         # Convert data into JSON format
-        ingredients = []
-        for i in range(len(names)):
-            ingredients.append({"name": names[i].strip(), "quantity": quantities[i].strip(), "unit": units[i].strip()})
+        ingredients = [{"name": names[i], "quantity": quantities[i], "unit": units[i]} for i in range(len(names))]
 
         # Store as JSON string
         cleaned_data['ingredients'] = json.dumps(ingredients)
