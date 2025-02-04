@@ -19,14 +19,53 @@
 <body>
     <main>
         <div class="form-wrapper">
+            <h2>Add a New Recipe</h2>
             <form method="POST">
                 {% csrf_token %}
                 {{ recipe_form.as_p }}
-                <button type="submit" id="submit-btn">Add Recipe</button>
+
+                <h3>Ingredients</h3>
+                <table id="ingredient-table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="ingredient_names"></td>
+                        <td><input type="text" name="ingredient_quantities"></td>
+                        <td><input type="text" name="ingredient_units"></td>
+                        <td><button type="button" onclick="addIngredientRow()">+</button></td>
+                    </tr>
+                </table>
+
+                <button type="submit" id="submit-recipe-btn">Add Recipe</button>
             </form>
-        </div>     
+        </div>
     </main>
+
+    <script>
+        function addIngredientRow() {
+            let table = document.getElementById("ingredient-table");
+            let newRow = table.insertRow(-1);
+            
+            let nameCell = newRow.insertCell(0);
+            let quantityCell = newRow.insertCell(1);
+            let unitCell = newRow.insertCell(2);
+            let actionCell = newRow.insertCell(3);
+    
+            nameCell.innerHTML = '<input type="text" name="ingredient_names">';
+            quantityCell.innerHTML = '<input type="text" name="ingredient_quantities">';
+            unitCell.innerHTML = '<input type="text" name="ingredient_units">';
+            actionCell.innerHTML = '<button type="button" onclick="removeIngredientRow(this)">-</button>';
+        }
+    
+        function removeIngredientRow(button) {
+            let row = button.parentElement.parentElement;
+            row.parentElement.removeChild(row);
+        }
+    </script>
 </body>
 
 </html>
-
