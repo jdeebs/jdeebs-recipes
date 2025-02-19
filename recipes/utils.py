@@ -34,7 +34,7 @@ def get_chart(chart_type, data, **kwargs):
     plt.switch_backend('AGG')
 
     # Specify figure size
-    fig = plt.figure(figsize=(6,3))
+    fig = plt.figure(figsize=(3,3))
 
     # Select chart type based on user input
     if chart_type == '#1':
