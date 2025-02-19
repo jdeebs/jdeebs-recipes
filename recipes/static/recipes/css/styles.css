@@ -201,9 +201,16 @@ button { all: unset; }
 
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: var(--spacing-xxl);
   margin: var(--spacing-lg);
+  text-align: center;
+}
+@media only screen and (max-width: 400px) {
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    margin: var(--spacing-xs);
+  }
 }
 .grid-item {
   font-family: "Playfair Display", serif;
@@ -231,13 +238,19 @@ button { all: unset; }
   opacity: 0.7;
 }
 .recipe-thumbnail {
-  width: 400px;
-  height: 200px;
+  width: 250px;
+  height: 150px;
   object-fit: cover;
   border-radius: 16px;
   border-left: .4em solid rgba(35, 134, 221, 0.5);
   border-bottom: .2em solid rgba(35, 134, 221, 0.5);
   transition: all 4s ease;
+}
+@media only screen and (max-width: 300px) {
+  .recipe-thumbnail {
+    width: 200px;
+    height: 150px;
+  }
 }
 .grid-item:hover a > .recipe-thumbnail {
   transform: scale(1.05);
