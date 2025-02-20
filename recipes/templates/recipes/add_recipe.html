@@ -35,7 +35,7 @@
 
                 <div class="form-group">
                     <label for="description">Description</label>
-                    {% render_field recipe_form.description class="form-control" id="description" placeholder="Enter a short description" rows="2" %}
+                    {% render_field recipe_form.description class="form-control" id="description" placeholder="Enter a short description" cols="24" rows="2" %}
                     {% if recipe_form.description.errors %}
                     <span class="error">{{ recipe_form.description.errors.0 }}</span>
                     {% endif %}
@@ -74,20 +74,14 @@
                 </div>
 
                 <h4 class="ingredient-label">Ingredients</h4>
+
                 <table id="ingredient-table">
                     <tr>
-                        <th>Name</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
-                        <th>Add Row</th>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="ingredient_names" class="form-control"
-                                placeholder="Ingredient Name"></td>
-                        <td><input type="text" name="ingredient_quantities" class="form-control" placeholder="Quantity">
+                        <td><label for="ingredient_names">Name</label><input type="text" name="ingredient_names" class="form-control ingredient_names" placeholder="Ingredient Name"></td>
+                        <td><label for="ingredient_quantities">Quantity</label><input type="text" name="ingredient_quantities" class="form-control ingredient_quantities" placeholder="Quantity">
                         </td>
-                        <td><input type="text" name="ingredient_units" class="form-control" placeholder="Unit"></td>
-                        <td><button type="button" class="add-btn" onclick="addIngredientRow()">+</button></td>
+                        <td><label for="ingredient_units">Unit</label><input type="text" name="ingredient_units" class="form-control ingredient_units" placeholder="Unit"></td>
+                        <td><label for="add-btn" class="add-btn-label">Click To Enter More Ingredients</label><button type="button" id="add-btn" onclick="addIngredientRow()">+</button></td>
                     </tr>
                 </table>
 
@@ -121,10 +115,10 @@
             let unitCell = newRow.insertCell(2);
             let actionCell = newRow.insertCell(3);
 
-            nameCell.innerHTML = '<input type="text" name="ingredient_names" class="form-control" placeholder="Ingredient Name">';
-            quantityCell.innerHTML = '<input type="text" name="ingredient_quantities" class="form-control" placeholder="Quantity">';
-            unitCell.innerHTML = '<input type="text" name="ingredient_units" class="form-control" placeholder="Unit">';
-            actionCell.innerHTML = '<button type="button" class="remove-btn" onclick="removeIngredientRow(this)">-</button>';
+            nameCell.innerHTML = '<label for="ingredient_names">Name</label><input type="text" name="ingredient_names" class="form-control ingredient_names" placeholder="Ingredient Name">';
+            quantityCell.innerHTML = '<label for="ingredient_quantities">Quantity</label><input type="text" name="ingredient_quantities" class="form-control ingredient_quantities" placeholder="Quantity">';
+            unitCell.innerHTML = '<label for="ingredient_units">Unit</label><input type="text" name="ingredient_units" class="form-control ingredient_units" placeholder="Unit">';
+            actionCell.innerHTML = '<label for="remove-btn" class="remove-btn-label">Click To Remove</label><button type="button" id="remove-btn" onclick="removeIngredientRow(this)">-</button>';
         }
 
         function removeIngredientRow(button) {
